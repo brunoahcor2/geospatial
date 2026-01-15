@@ -1,0 +1,16 @@
+test-data:
+  persons:
+    - id: 1
+      name: Bruno Rocha
+      birth-date: 1985-12-09
+      admission-date: 2020-01-01
+
+    - id: 2
+      name: Fulano de Tal
+      birth-date: 1978-03-25
+      admission-date: 2018-08-15
+
+    - id: 3
+      name: Ciclano de Tal
+      birth-date: 1992-07-05
+      admission-date: 2021-02-10
