@@ -1,11 +1,32 @@
-# Usando imagem base com Java 21
-FROM eclipse-temurin:21-jre-alpine
+# =============================
+# Etapa 1: Build (compila o JAR)
+# =============================
+FROM eclipse-temurin:21 AS build
 
-# Diretório da aplicação dentro do container
 WORKDIR /app
 
-# Copiar o JAR para o container
-COPY target/geospatial-0.0.1-SNAPSHOT.jar app.jar
+# Copiar arquivos Maven
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+
+# Baixa dependências
+RUN ./mvnw dependency:resolve
+
+# Copiar o código-fonte
+COPY src ./src
+
+# Compila o JAR sem rodar testes (opcional: pode remover -DskipTests se quiser testar)
+RUN ./mvnw package -DskipTests
+
+# =============================
+# Etapa 2: Runtime (imagem enxuta)
+# =============================
+FROM eclipse-temurin:21-jre-alpine
+
+WORKDIR /app
+
+# Copia apenas o JAR compilado da etapa anterior
+COPY --from=build /app/target/geospatial-0.0.1-SNAPSHOT.jar app.jar
 
 # Expõe a porta que o Spring Boot vai rodar
 EXPOSE 8080
